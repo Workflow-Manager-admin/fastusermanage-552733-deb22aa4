@@ -1,14 +1,16 @@
 from typing import Dict, Optional, List
-from .models import UserInDB, UserCreate, UserBase, UserRole
+from .models import UserCreate, UserRole
 
 # In-memory storage for demo/demo/POC purposes
 db_users: Dict[str, dict] = {}
 auto_increment_id = 1
 
+
 def _get_next_id():
     global auto_increment_id
     auto_increment_id += 1
     return auto_increment_id - 1
+
 
 # PUBLIC_INTERFACE
 def create_user(user: UserCreate, role: str = UserRole.USER) -> dict:
@@ -22,10 +24,12 @@ def create_user(user: UserCreate, role: str = UserRole.USER) -> dict:
     db_users[user.username] = user_dict
     return user_dict
 
+
 # PUBLIC_INTERFACE
 def get_user_by_username(username: str) -> Optional[dict]:
     """Look up user by username."""
     return db_users.get(username)
+
 
 # PUBLIC_INTERFACE
 def get_user_by_email(email: str) -> Optional[dict]:
@@ -33,6 +37,7 @@ def get_user_by_email(email: str) -> Optional[dict]:
         if v.get("email") == email:
             return v
     return None
+
 
 # PUBLIC_INTERFACE
 def authenticate_user(username: str, password: str):
@@ -43,6 +48,7 @@ def authenticate_user(username: str, password: str):
     if not verify_password(password, user["hashed_password"]):
         return False
     return user
+
 
 # PUBLIC_INTERFACE
 def update_user_profile(username: str, updates: dict) -> dict:
@@ -57,9 +63,11 @@ def update_user_profile(username: str, updates: dict) -> dict:
         user["hashed_password"] = get_password_hash(updates["password"])
     return user
 
+
 # PUBLIC_INTERFACE
 def get_all_users() -> List[dict]:
     return list(db_users.values())
+
 
 # PUBLIC_INTERFACE
 def delete_user(username: str) -> bool:
@@ -67,3 +75,4 @@ def delete_user(username: str) -> bool:
         del db_users[username]
         return True
     return False
+
