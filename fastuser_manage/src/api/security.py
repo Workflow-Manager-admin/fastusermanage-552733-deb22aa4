@@ -73,4 +73,3 @@ def get_current_active_admin(current_user: dict = Depends(get_current_user)):
     if current_user["role"] != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Requires admin privileges")
     return current_user
-

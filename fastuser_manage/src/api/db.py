@@ -75,4 +75,3 @@ def delete_user(username: str) -> bool:
         del db_users[username]
         return True
     return False
-

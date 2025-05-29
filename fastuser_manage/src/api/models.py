@@ -64,4 +64,3 @@ class TokenData(BaseModel):
     username: Optional[str] = None
     role: Optional[str] = None
     user_id: Optional[int] = None
-
