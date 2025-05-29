@@ -1,13 +1,14 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
-from ..models import Token, UserLogin
+from ..models import Token
 from .. import db, security
 
 router = APIRouter(
     prefix="/auth",
     tags=["auth"]
 )
+
 
 # PUBLIC_INTERFACE
 @router.post("/login", response_model=Token)
@@ -22,9 +23,11 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
+
 # PUBLIC_INTERFACE
 @router.post("/logout", status_code=204)
 def logout():
     """Logout endpoint - noop for JWT. (frontend should discard token)"""
     # Could implement JWT blacklist in production
     return
+

@@ -4,7 +4,7 @@ from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from typing import Optional
-from .models import TokenData, UserInDB, UserRole
+from .models import TokenData, UserRole
 from . import db
 
 # SECRET/alg - for production, load from env/config!
@@ -15,15 +15,18 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
+
 # PUBLIC_INTERFACE
 def verify_password(plain_password, hashed_password):
     """Verify password hash."""
     return pwd_context.verify(plain_password, hashed_password)
 
+
 # PUBLIC_INTERFACE
 def get_password_hash(password):
     """Hash a plaintext password."""
     return pwd_context.hash(password)
+
 
 # PUBLIC_INTERFACE
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -33,6 +36,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
 
 # PUBLIC_INTERFACE
 def get_current_user(token: str = Depends(oauth2_scheme)):
@@ -56,14 +60,17 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         raise credentials_exception
     return user
 
+
 # PUBLIC_INTERFACE
-def get_current_active_user(current_user: UserInDB = Depends(get_current_user)):
+def get_current_active_user(current_user: dict = Depends(get_current_user)):
     """FastAPI dependency that checks for active user. (Extendable)"""
     return current_user
 
+
 # PUBLIC_INTERFACE
-def get_current_active_admin(current_user: UserInDB = Depends(get_current_user)):
+def get_current_active_admin(current_user: dict = Depends(get_current_user)):
     """Ensures current user has admin rights."""
     if current_user["role"] != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Requires admin privileges")
     return current_user
+
