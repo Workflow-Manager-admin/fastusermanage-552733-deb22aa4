@@ -22,4 +22,3 @@ app.include_router(users.router)
 @app.get("/")
 def health_check():
     return {"message": "Healthy"}
-

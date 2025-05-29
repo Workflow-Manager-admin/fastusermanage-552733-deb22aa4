@@ -54,4 +54,3 @@ def admin_delete_user(username: str, admin_user=Depends(security.get_current_act
     if not db.delete_user(username):
         raise HTTPException(status_code=404, detail="User not found")
     return
-

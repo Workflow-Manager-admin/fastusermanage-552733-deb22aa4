@@ -30,4 +30,3 @@ def logout():
     """Logout endpoint - noop for JWT. (frontend should discard token)"""
     # Could implement JWT blacklist in production
     return
-
